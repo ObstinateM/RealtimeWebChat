@@ -7,10 +7,20 @@
     <title>Document</title>
 </head>
 <body>
-    <form action="">
-        <input type="text" name="username" placeholder="Enter your username">
-        <input type="email" name="email" placeholder="Enter your email address">
-        <input type="password"name="password" placeholder="Enter your password">
+    <%- include('partials/messages.ejs') %> 
+    <form action="/register" method="post">
+        <input type="username" id="username" name="username" placeholder="Enter your username"
+        value="<%= typeof username != 'undefined' ? username : '' %> ">
+        
+        <input type="email" id="email" name="email" placeholder="Enter your email address"
+        value="<%= typeof email != 'undefined' ? email : '' %>" >
+
+        <input type="password" id="password" name="password" placeholder="Enter your password"
+        value="<%= typeof password != 'undefined' ? password : '' %> ">
+
+        <input type="password" id="password2" name="password2" placeholder="Confirm Password"
+        value="<%= typeof password2 != 'undefined' ? password2 : '' %> ">
+
         <button type="submit">submit</button>
     </form>
 </body>
