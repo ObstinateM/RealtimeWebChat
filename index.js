@@ -75,7 +75,7 @@ app.post('/register', async (req, res) => {
     if(password.length < 8){
         errors.push({ msg:'Password should be at least 8 characters' });
     }
-
+    
     if(errors.length > 0){
         res.render('register', {
             errors,
@@ -154,7 +154,7 @@ server.listen(3000, () => {
     console.log('localhost:3000 ON !');
 });
 
-// To import from another file
+// Check if an email is already stored in the database
 function emailExistInDatabase(email, callback) { // return true if exist
     let sql = `SELECT COUNT(email) as mailNumber FROM users WHERE email = '${email}'`;
     let query = db.query(sql, (err, result) => {
@@ -163,9 +163,7 @@ function emailExistInDatabase(email, callback) { // return true if exist
     });
 }
 
-/*
-Check if a username is already stored in the database
-*/
+// Check if a username is already stored in the database
 function usernameExistInDatabase(username, callback) {
     let sql = `SELECT COUNT(username) as usernameNumber FROM users WHERE username = '${username}'`;
     let query = db.query(sql, (err, result) => {

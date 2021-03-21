@@ -15,7 +15,6 @@ const db = mysql.createConnection({
 module.exports = function(passport) {
     passport.use(
         new LocalStrategy({usernameField: 'email'}, (email, password, done) => {
-            console.log('LOCALSTRATEGY : ', password);
             emailExistInDatabase(email, (emailExist) => {
                 if(emailExist){
                     // Y'a une email
@@ -41,12 +40,10 @@ module.exports = function(passport) {
     );
 
     passport.serializeUser((user, done) => {
-        console.log('serializeUser');
         done(null, user.id);
     });
 
     passport.deserializeUser((id, done) => {
-        console.log('DEserializeUser');
         let sql = `SELECT * FROM users WHERE id = '${id}'`;
         let query = db.query(sql, (err, result) => {
             done(err, result[0]);
