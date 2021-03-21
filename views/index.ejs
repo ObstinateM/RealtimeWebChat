@@ -18,7 +18,8 @@
         var socket = io();
 
         var send = function(){
-            var text = document.getElementById('m').value;
+            var text = '<%= user.email %> : ';
+            text = text + document.getElementById('m').value;
             socket.emit('chat message', text);
         };
         
