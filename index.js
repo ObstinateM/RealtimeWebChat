@@ -141,12 +141,12 @@ app.get('/logout', (req, res) => {
 });
 
 app.get('/app', ensureAuthenticated, (req, res) => {
-    res.render('chat');
+    res.render('chat', {user: req.user});
 });
 
 io.on('connection', (socket) =>{
-    socket.on('chat message', (msg) => {
-        io.emit('chat message', msg);
+    socket.on('chat message', (msg, userIdSender) => {
+        io.emit('chat message', msg, userIdSender);
     });
 });
 

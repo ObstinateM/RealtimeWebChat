@@ -8,7 +8,9 @@
 </head>
 <body>
     <div>
-        <ul id="messages"></ul>
+        <ul id="MsgListe">
+            <li id="clearfix2"></li>
+        </ul>
         <input id="m"/> <button onClick="send()">Send</button>
     </div>
 
@@ -20,14 +22,47 @@
         var send = function(){
             var text = '<%= user.email %> : ';
             text = text + document.getElementById('m').value;
-            socket.emit('chat message', text);
-        };
+            var userSenderId = '<%= user.id %>';
+            socket.emit('chat message', text, userSenderId);
+        }
         
-        var receive = function(msg){
-            var li = document.createElement('li');
-            li.innerText = msg;
-            document.getElementById('messages').appendChild(li);    
-        };
+        var receive = function(msg, senderId){
+        // Message autre
+            if(senderId == '<%= user.id %>'){
+                var div = document.createElement('div');
+                div.setAttribute('class', 'w-full flex justify-start');
+                div.innerHTML = `
+                    <div class="bg-gray-100 rounded px-5 py-2 my-2 text-gray-700 relative" style="max-width: 300px;">
+                        <span class="block">${msg}</span>
+                        <span class="block text-xs text-right">10:30pm</span>
+                    </div>
+                `;
+                document.getElementById('clearfix2').appendChild(div);
+            } else {
+                // Message de soi-meme
+                var div = document.createElement('div');
+                div.setAttribute('class', 'w-full flex justify-end');
+                div.innerHTML = `
+                    <div class="bg-gray-100 rounded px-5 py-2 my-2 text-gray-700 relative" style="max-width: 300px;">
+                        <span class="block">Hello bro</span>
+                        <span class="block text-xs text-right">10:30pm</span>
+                    </div>
+                `;
+                document.getElementById('clearfix2').appendChild(div);
+            }
+       }
+
+        // var receive = function(msg, userSenderId){
+        //     if(userSenderId == '<%= user.id %>'){
+        //         var li = document.createElement('li');
+        //         li.innerText = msg;
+        //         document.getElementById('MyMsg').appendChild(li);   
+        //     } else {
+        //         var li = document.createElement('li');
+        //         li.innerText = msg;
+        //         document.getElementById('NotMyMsg').appendChild(li);
+        //     }
+        // }
 
         socket.on('chat message', receive);
     </script>

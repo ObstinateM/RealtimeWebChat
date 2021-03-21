@@ -78,31 +78,8 @@
                     </div>
                     <div id="chat" class="w-full overflow-y-auto p-10 relative" style="height: 700px;" ref="toolbarChat">
                         <ul>
-                            <li class="clearfix2">
-                                <div class="w-full flex justify-start">
-                                    <div class="bg-gray-100 rounded px-5 py-2 my-2 text-gray-700 relative" style="max-width: 300px;">
-                                        <span class="block">Hello bro</span>
-                                        <span class="block text-xs text-right">10:30pm</span>
-                                    </div>
-                                </div>
-                                <div class="w-full flex justify-end" >
-                                    <div class="bg-gray-100 rounded px-5 py-2 my-2 text-gray-700 relative" style="max-width: 300px;">
-                                        <span class="block">Hello</span>
-                                        <span class="block text-xs text-left">10:32pm</span>
-                                    </div>
-                                </div>
-                                <div class="w-full flex justify-end" >
-                                    <div class="bg-gray-100 rounded px-5 py-2 my-2 text-gray-700 relative" style="max-width: 300px;">
-                                        <span class="block">how are you?</span>
-                                        <span class="block text-xs text-left">10:32pm</span>
-                                    </div>
-                                </div>
-                                <div class="w-full flex justify-start">
-                                    <div class="bg-gray-100 rounded px-5 py-2 my-2 text-gray-700 relative" style="max-width: 300px;">
-                                        <span class="block">I am fine</span>
-                                        <span class="block text-xs text-right">10:42pm</span>
-                                    </div>
-                                </div>
+                            <li id="msg" class="clearfix2">
+                                <!-- La conversation -->
                             </li>
                         </ul>
                     </div>
@@ -119,10 +96,10 @@
                             </svg>
                         </button>
 
-                        <input aria-placeholder="Ecrivez votre message" placeholder="Ecrivez votre message"
+                        <input id="m" aria-placeholder="Ecrivez votre message" placeholder="Ecrivez votre message"
                             class="py-2 mx-3 pl-5 block w-full rounded-full bg-gray-100 outline-none focus:text-gray-700" type="text" name="message" required/>
 
-                        <button class="outline-none focus:outline-none" type="submit">
+                        <button onClick="send()" class="outline-none focus:outline-none" type="submit">
                             <svg class="text-gray-400 h-7 w-7 origin-center transform rotate-90" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
                                 <path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z" />
                             </svg>
@@ -133,5 +110,46 @@
         </div>
     </div>
 </div>
+
+<script src="/socket.io/socket.io.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script>
+    var socket = io();
+
+    var send = function(){
+        var text = document.getElementById('m').value;
+        var userSenderId = '<%= user.id %>';
+        socket.emit('chat message', text, userSenderId);
+    }
+    
+    var receive = function(msg, senderId){
+        // Message autre
+        if(senderId == '<%= user.id %>'){
+            var div = document.createElement('div');
+            div.setAttribute('class', 'w-full flex justify-end');
+            div.innerHTML = `
+                <div class="bg-gray-100 rounded px-5 py-2 my-2 text-gray-700 relative" style="max-width: 300px;">
+                    <span class="block">${msg}</span>
+                    <span class="block text-xs text-right">10:30pm</span>
+                </div>
+            `;
+            document.getElementById('msg').appendChild(div);
+        } else {
+            // Message de soi-meme
+            var div = document.createElement('div');
+            div.setAttribute('class', 'w-full flex justify-start');
+            div.innerHTML = `
+                <div class="bg-gray-100 rounded px-5 py-2 my-2 text-gray-700 relative" style="max-width: 300px;">
+                    <span class="block">${msg}</span>
+                    <span class="block text-xs text-right">10:30pm</span>
+                </div>
+            `;
+            document.getElementById('msg').appendChild(div);
+        }
+    }
+
+    socket.on('chat message', receive);
+</script>
+
 </body>
 </html>
